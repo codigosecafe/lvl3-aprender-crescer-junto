@@ -26,7 +26,7 @@ class PostsController extends Controller
         $input = $request->toCollection();
 
         $post = new Post();
-        $post->titulo        = $input->get('titulo-post');
+        $post->titulo   = $input->get('titulo-post');
         $post->conteudo = $input->get('content-post');
         $post->save();
 
@@ -46,7 +46,7 @@ class PostsController extends Controller
 
         $post = Post::where('id', '=', $id)->first();
 
-        $post->titulo        = $input->get('titulo-post');
+        $post->titulo   = $input->get('titulo-post');
         $post->conteudo = $input->get('content-post');
         $post->save();
 
