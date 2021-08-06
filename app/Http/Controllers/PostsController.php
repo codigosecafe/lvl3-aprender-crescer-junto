@@ -12,7 +12,6 @@ class PostsController extends Controller
 {
     public function index()
     {
-
         $publicPosts = PublicPost::orderBy('created_at', 'desc')->get();
         $protectedPosts = ProtectedPost::orderBy('created_at', 'desc')->get();
         return view('posts.index',[
@@ -20,9 +19,9 @@ class PostsController extends Controller
             'protectedPosts' => $protectedPosts
         ]);
     }
+
     public function indexPanel()
     {
-
         $publicPosts = PublicPost::orderBy('created_at', 'desc')->get();
         $protectedPosts = ProtectedPost::orderBy('created_at', 'desc')->get();
         return view('posts.painel',[
