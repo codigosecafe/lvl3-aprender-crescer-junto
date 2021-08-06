@@ -29,17 +29,26 @@
           @csrf
           @method('PUT')
           <div class="row mb-3">
-             <div class="col-12">
+             <div class="col-8">
                 <label for="titulo" class="form-label">
                    <h3>Titulo</h3>
                 </label>
-                <input type="text" class="form-control" name="titulo-post" id="titulo" value="{{ $post->titulo }}" placeholder="Informe o titulo do seu post" />
+                <input type="text" class="form-control form-control-lg" name="titulo-post" id="titulo" value="{{ $post->title }}" placeholder="Informe o titulo do seu post" />
+             </div>
+             <div class="col-4">
+                <label for="titulo" class="form-label">
+                   <h3>Tipo de publicação</h3>
+                </label>
+                <select class="form-select form-select-lg mb-3" name="type">
+                    <option {{ ($typePost == 'public')? 'selected': '' }} value="public">PUBLICA</option>
+                    <option {{ ($typePost == 'protected')? 'selected': '' }} value="protected">INTERNA</option>
+                  </select>
              </div>
           </div>
           <div class="row">
              <div class="col-12">
                 <div id="editor">
-                   {!! $post->conteudo !!}
+                   {!! $post->content !!}
                 </div>
                 <textarea id="content" name="content-post" hidden>
 
@@ -72,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     $( "form" ).submit(function( event ) {
         console.log(CKEDITOR.instances.editor.getData());
         $('#content').val(CKEDITOR.instances.editor.getData());
-        FormOS.submitDataForm('[form-atualizar]', '{{ route('post.update', ['id' => $post->id ]) }}', 'form-atualizar-temp')
+        FormOS.submitDataForm('[form-atualizar]', '{{ route('post.update', ['type'=> $typePost,'id' => $post->id ]) }}', 'form-atualizar-temp')
         event.preventDefault();
     });
 
