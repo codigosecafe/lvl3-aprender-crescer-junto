@@ -111,6 +111,6 @@ class PostsController extends Controller
             ProtectedPost::where('id', '=', $id)->delete();
         }
 
-        return redirect()->route('post.panel')->with('message', 'Post deleted successfully!');
+        return redirect()->route('post.index')->with('message', 'Post deleted successfully!');
     }
 }
