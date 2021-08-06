@@ -16,21 +16,13 @@ class PostsController extends Controller
 
     public function index()
     {
-         list('publicPosts' => $publicPosts, 'protectedPosts' => $protectedPosts) = $this->postService->listPosts();
-
-        return view('posts.index',[
-            'publicPosts' => $publicPosts,
-            'protectedPosts' => $protectedPosts
-        ]);
+        return view('posts.index',$this->postService->listPosts());
     }
 
     public function indexPanel()
     {
-        list('publicPosts' => $publicPosts, 'protectedPosts' => $protectedPosts) = $this->postService->listPosts();
-        return view('posts.painel',[
-            'publicPosts' => $publicPosts,
-            'protectedPosts' => $protectedPosts
-        ]);
+
+        return view('posts.painel',$this->postService->listPosts());
     }
 
     public function create()

@@ -22,9 +22,6 @@ class PostService
 
     public function listPosts()
     {
-        $publicPosts = $this->publicPostRepository->list();
-        $protectedPosts = $this->protectedPostRepository->list();
-
         return [
             'publicPosts' => $this->publicPostRepository->list(),
             'protectedPosts' => $this->protectedPostRepository->list()
@@ -34,51 +31,54 @@ class PostService
     public function createPost(Collection $request)
     {
         if($request->get('type') == 'public'){
-
-            $this->publicPostRepository->insert($request);
-        }else{
-            $this->protectedPostRepository->insert($request);
+            return $this->publicPostRepository->insert($request);
         }
+
+        return $this->protectedPostRepository->insert($request);
     }
 
     public function editPost($type, $id)
     {
         if($type == 'public'){
-            $post =  $this->publicPostRepository->findById($id);
-        }else{
-            $post = $this->protectedPostRepository->findById($id);
+            return  $this->publicPostRepository->findById($id);
         }
-        return $post;
+        return $this->protectedPostRepository->findById($id);
     }
+
+
     public function updatePost($type, $id, Collection $request)
     {
         if($request->get('type') == 'public'){
-
-            if($type == 'protected'){
-                $this->protectedPostRepository->delete($id);
-                $post = $this->publicPostRepository->insert($request);
-            }else{
-                $post = $this->publicPostRepository->update($id, $request);
-            }
-
-        }else{
-            if($type == 'public'){
-                $this->publicPostRepository->delete($id);
-                $post = $this->protectedPostRepository->insert($request);
-            }else{
-                $post = $this->protectedPostRepository->update($id, $request);
-
-            }
+            return $this->updatePublicPost($type, $id, $request);
         }
-        return $post;
+        return $this->updateProtectedPost($type, $id, $request);
+    }
+
+
+    protected function updatePublicPost($type, $id, $request)
+    {
+        if($type == 'protected'){
+            $this->protectedPostRepository->delete($id);
+            return $this->publicPostRepository->insert($request);
+        }
+        return $this->publicPostRepository->update($id, $request);
+    }
+
+    protected function updateProtectedPost($type, $id, $request)
+    {
+        if($type == 'public'){
+            $this->publicPostRepository->delete($id);
+            return $this->protectedPostRepository->insert($request);
+        }
+        return $this->protectedPostRepository->update($id, $request);
     }
 
     public function deletePost($type, $id)
     {
         if($type == 'public'){
-            $this->publicPostRepository->delete($id);
-        }else{
-            $this->protectedPostRepository->delete($id);
+           return $this->publicPostRepository->delete($id);
         }
+
+        return  $this->protectedPostRepository->delete($id);
     }
 }
