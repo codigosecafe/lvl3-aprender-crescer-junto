@@ -16,7 +16,7 @@ class CreatePublicPostsTable extends Migration
         Schema::create('public_posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->longText('content');
+            $table->longText('content')->nullable();
             $table->timestamps();
         });
     }

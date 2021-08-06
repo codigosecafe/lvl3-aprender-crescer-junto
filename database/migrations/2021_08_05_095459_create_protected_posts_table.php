@@ -16,7 +16,7 @@ class CreateProtectedPostsTable extends Migration
         Schema::create('protected_posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->longText('content');
+            $table->longText('content')->nullable();
             $table->timestamps();
         });
     }

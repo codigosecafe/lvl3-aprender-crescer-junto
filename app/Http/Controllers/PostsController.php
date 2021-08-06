@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Entities\PublicPost;
+use App\Services\PostService;
 use App\Http\Requests\Request;
-use App\Entities\ProtectedPost;
-
-
 
 class PostsController extends Controller
 {
+    protected $postService;
+
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+    }
+
     public function index()
     {
-        $publicPosts = PublicPost::orderBy('created_at', 'desc')->get();
-        $protectedPosts = ProtectedPost::orderBy('created_at', 'desc')->get();
+         list('publicPosts' => $publicPosts, 'protectedPosts' => $protectedPosts) = $this->postService->listPosts();
+
         return view('posts.index',[
             'publicPosts' => $publicPosts,
             'protectedPosts' => $protectedPosts
@@ -22,8 +26,7 @@ class PostsController extends Controller
 
     public function indexPanel()
     {
-        $publicPosts = PublicPost::orderBy('created_at', 'desc')->get();
-        $protectedPosts = ProtectedPost::orderBy('created_at', 'desc')->get();
+        list('publicPosts' => $publicPosts, 'protectedPosts' => $protectedPosts) = $this->postService->listPosts();
         return view('posts.painel',[
             'publicPosts' => $publicPosts,
             'protectedPosts' => $protectedPosts
@@ -37,80 +40,28 @@ class PostsController extends Controller
 
     public function store(Request $request)
     {
-        $input = $request->toCollection();
 
-        if($input->get('type') == 'public'){
-
-            $post = new PublicPost();
-            $post->title   = $input->get('titulo-post');
-            $post->content = $input->get('content-post');
-            $post->save();
-
-        }else{
-
-            $post = new ProtectedPost();
-            $post->title   = $input->get('titulo-post');
-            $post->content = $input->get('content-post');
-            $post->save();
-        }
-
+        $this->postService->createPost($request->toCollection());
         return redirect()->route('post.index')->with('message', 'Post created successfully!');
     }
 
     public function edit($type, $id)
     {
-        if($type == 'public'){
-            $post = PublicPost::find($id);
-        }else{
-            $post = ProtectedPost::find($id);
-        }
-        return view('posts.edit', ['post' => $post, 'typePost' => $type]);
+        return view('posts.edit', [
+            'post' => $this->postService->editPost($type, $id),
+            'typePost' => $type
+        ]);
     }
 
     public function update($type, $id, Request $request)
     {
-
-        $input = $request->toCollection();
-
-        if($input->get('type') == 'public'){
-
-            if($type == 'protected'){
-                ProtectedPost::where('id', '=', $id)->delete();
-                $post = new PublicPost();
-            }else{
-                $post = PublicPost::where('id', '=', $id)->first();
-            }
-            $post->title   = $input->get('titulo-post');
-            $post->content = $input->get('content-post');
-            $post->save();
-
-        }else{
-
-            if($type == 'public'){
-                PublicPost::where('id', '=', $id)->delete();
-                $post = new ProtectedPost();
-            }else{
-                $post = ProtectedPost::where('id', '=', $id)->first();
-            }
-
-            $post->title   = $input->get('titulo-post');
-            $post->content = $input->get('content-post');
-            $post->save();
-        }
-
+        $this->postService->updatePost($type, $id, $request->toCollection());
         return redirect()->route('post.index')->with('message', 'Post updated successfully!');
     }
 
-
-
-    public function destroy($type, $id, Request $request)
+    public function destroy($type, $id)
     {
-        if($type == 'public'){
-            PublicPost::where('id', '=', $id)->delete();
-        }else{
-            ProtectedPost::where('id', '=', $id)->delete();
-        }
-
+        $this->postService->deletePost($type, $id);
         return redirect()->route('post.index')->with('message', 'Post deleted successfully!');
     }
 }
