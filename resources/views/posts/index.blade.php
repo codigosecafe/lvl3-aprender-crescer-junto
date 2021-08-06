@@ -35,7 +35,7 @@
                 @endfor
 
             </div>
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 
                 @for ($i=0; $i < count($protectedPosts);$i++)
                     <div class="row">

@@ -55,7 +55,7 @@ class PostsController extends Controller
             $post->save();
         }
 
-        return redirect()->route('post.panel')->with('message', 'Post created successfully!');
+        return redirect()->route('post.index')->with('message', 'Post created successfully!');
     }
 
     public function edit($type, $id)
@@ -81,7 +81,6 @@ class PostsController extends Controller
             }else{
                 $post = PublicPost::where('id', '=', $id)->first();
             }
-
             $post->title   = $input->get('titulo-post');
             $post->content = $input->get('content-post');
             $post->save();
@@ -100,7 +99,7 @@ class PostsController extends Controller
             $post->save();
         }
 
-        return redirect()->route('post.panel')->with('message', 'Post updated successfully!');
+        return redirect()->route('post.index')->with('message', 'Post updated successfully!');
     }
 
 
